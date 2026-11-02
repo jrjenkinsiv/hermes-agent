@@ -445,6 +445,10 @@ class _ProviderCollector:
     def register_memory_provider(self, provider):
         self.provider = provider
 
+    def call_mcp(self, server, tool, arguments=None, timeout=30):
+        """Use the normal plugin MCP client, including its scoped grant and trust checks."""
+        return self._plugin_context().call_mcp(server, tool, arguments, timeout=timeout)
+
     def register_skill(self, *args, **kwargs):
         """Forward skills to the plugin registry, tracking qualified name + path so
         switching the active provider can retract the previous one's skills. Gated

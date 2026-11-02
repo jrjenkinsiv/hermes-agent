@@ -113,6 +113,20 @@ class MyMemoryProvider(MemoryProvider):
     # ... implement remaining methods
 ```
 
+### Reusing a configured MCP server
+
+Memory providers may retain the `ctx` passed to `register(ctx)` and use
+`ctx.call_mcp(server, tool, arguments=None, timeout=30)` during recall. This uses
+Hermes's existing MCP client in both in-process and isolated plugin-host modes;
+it does not create a parallel connection or bypass MCP trust and approval checks.
+
+The operator must grant the server through
+`plugins.entries.<provider-name>.mcp_allowlist`. Missing grants are denied and
+permission errors propagate to the provider. The grant covers a server, not an
+individual tool. Automatic recall should call only a read-only tool, use a short
+timeout, and handle the returned `ok`, `error`, and `truncated` envelope fields.
+Do not perform network calls in `is_available()`.
+
 ### Initialization context
 
 `AIAgent` passes session context through `MemoryManager.initialize_all()` to
